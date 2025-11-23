@@ -1,0 +1,160 @@
+run:
+  timeout: 5m
+  
+  tests: true
+  
+  skip-dirs:
+    - bin
+    - vendor
+  
+  skip-files:
+    - ".*\\.pb\\.go$"
+
+output:
+  format: colored-line-number
+  
+  print-issued-lines: true
+  
+  print-linter-name: true
+
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - unused
+    
+    - gofmt
+    - goimports
+    - misspell
+    - revive
+    - gosec
+    - goconst
+    - gocyclo
+    - dupl
+    - unconvert
+    - unparam
+    - prealloc
+    - exportloopref
+    - nolintlint
+    
+  disable:
+    - deadcode
+    - varcheck
+    - structcheck
+    - ifshort
+    - golint
+    - scopelint
+    - maligned
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    
+    check-blank: true
+  
+  govet:
+    check-shadowing: true
+  
+  gofmt:
+    simplify: true
+  
+  goimports:
+    local-prefixes: pr-reviewer-service
+  
+  gocyclo:
+    min-complexity: 15
+  
+  dupl:
+    threshold: 100
+  
+  goconst:
+    min-len: 3
+    min-occurrences: 3
+  
+  misspell:
+    locale: US
+  
+  revive:
+    enable-all-rules: false
+    rules:
+      - name: blank-imports
+      - name: context-as-argument
+      - name: context-keys-type
+      - name: dot-imports
+      - name: error-return
+      - name: error-strings
+      - name: error-naming
+      - name: exported
+      - name: if-return
+      - name: increment-decrement
+      - name: var-naming
+      - name: var-declaration
+      - name: package-comments
+      - name: range
+      - name: receiver-naming
+      - name: time-naming
+      - name: unexported-return
+      - name: indent-error-flow
+      - name: errorf
+      - name: empty-block
+      - name: superfluous-else
+      - name: unused-parameter
+      - name: unreachable-code
+      - name: redefines-builtin-id
+  
+  gosec:
+    includes: []
+    excludes:
+      - G104
+    
+    severity: medium
+    confidence: medium
+  
+  prealloc:
+    simple: true
+    range-loops: true
+    for-loops: false
+
+issues:
+  max-issues-per-linter: 50
+  
+  max-same-issues: 3
+  
+  new: false
+  
+  exclude-rules:
+
+    - path: _test\.go
+      linters:
+        - gocyclo
+        - errcheck
+        - dupl
+        - gosec
+        - goconst
+    
+    - path: internal/hmac/
+      text: "weak cryptographic primitive"
+      linters:
+        - gosec
+
+    - linters:
+        - staticcheck
+      text: "SA9003:"
+    
+    - linters:
+        - lll
+      source: "^//go:generate "
+  
+  exclude-use-default: false
+
+severity:
+  default-severity: error
+  
+  rules:
+    - linters:
+        - dupl
+      severity: info
